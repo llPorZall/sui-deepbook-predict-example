@@ -165,6 +165,11 @@ export default function ReviewPage() {
     if (!hasPosition) {
       reasons.push("Preview a position on the simulator first.");
     }
+    if (hasPosition && !oracleLive) {
+      reasons.push(
+        "Selected market's oracle is no longer live on testnet (expired or settled) — pick a different market.",
+      );
+    }
     return reasons;
   }, [
     isTestnetMode,
@@ -174,6 +179,7 @@ export default function ReviewPage() {
     requiredDusdc,
     hasGas,
     hasPosition,
+    oracleLive,
   ]);
 
   // --- Real receipt / market / position display values ---
