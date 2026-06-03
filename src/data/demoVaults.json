@@ -1,0 +1,11 @@
+[
+  {
+    "vaultId": "VLT_USDC_MAIN",
+    "quoteAsset": "USDC",
+    "totalLiquidity": "248500",
+    "liabilities": "96200",
+    "maxPayout": "152300",
+    "utilizationRate": "0.39",
+    "dataSource": "simulated"
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "marketId": "MKT_0x29A",
+    "asset": "SUI / USD",
+    "quoteAsset": "USDC",
+    "marketType": "binary",
+    "direction": "above",
+    "strike": 4.0,
+    "expiry": "2099-12-31T13:42:09Z",
+    "oracleStatus": "Active",
+    "lastOraclePrice": 4.1,
+    "dataSource": "testnet"
+  },
+  {
+    "marketId": "MKT_0x2B1",
+    "asset": "BTC / USD",
+    "quoteAsset": "USDC",
+    "marketType": "vertical_range",
+    "lowerStrike": 60000,
+    "higherStrike": 72000,
+    "expiry": "2099-12-31T00:00:00Z",
+    "oracleStatus": "PendingSettlement",
+    "lastOraclePrice": 67500,
+    "dataSource": "simulated"
+  },
+  {
+    "marketId": "MKT_0x2C7",
+    "asset": "ETH / USD",
+    "quoteAsset": "USDC",
+    "marketType": "binary",
+    "direction": "above",
+    "strike": 3200,
+    "expiry": "2099-12-31T00:00:00Z",
+    "oracleStatus": "Inactive",
+    "dataSource": "simulated"
+  },
+  {
+    "marketId": "MKT_0x2D3",
+    "asset": "SUI / USD",
+    "quoteAsset": "USDC",
+    "marketType": "vertical_range",
+    "lowerStrike": 3.2,
+    "higherStrike": 3.8,
+    "expiry": "2026-01-01T00:00:00Z",
+    "oracleStatus": "Settled",
+    "lastOraclePrice": 3.5,
+    "settlementPrice": 3.5,
+    "dataSource": "testnet"
+  },
+  {
+    "marketId": "MKT_0x2E9",
+    "asset": "SOL / USD",
+    "quoteAsset": "USDC",
+    "marketType": "binary",
+    "direction": "above",
+    "strike": 180,
+    "expiry": "2099-12-31T02:32:22Z",
+    "oracleStatus": "Active",
+    "lastOraclePrice": 174.5,
+    "dataSource": "testnet"
+  },
+  {
+    "marketId": "MKT_0x2F4",
+    "asset": "BTC / USD",
+    "quoteAsset": "USDC",
+    "marketType": "binary",
+    "direction": "above",
+    "strike": 75000,
+    "expiry": "2099-12-31T00:00:00Z",
+    "oracleStatus": "PendingSettlement",
+    "lastOraclePrice": 74200,
+    "dataSource": "simulated"
+  }
+]

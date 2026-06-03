@@ -1,0 +1,16 @@
+<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="PredictFlow icon">
+  <defs>
+    <linearGradient id="pfBlue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#298DFF"/>
+      <stop offset="1" stop-color="#0E6FE6"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="44" height="44" rx="12" fill="url(#pfBlue)"/>
+  <g fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round">
+    <path d="M15 24 C 24 24, 26 15, 34 15"/>
+    <path d="M15 24 C 24 24, 26 33, 34 33"/>
+  </g>
+  <circle cx="15" cy="24" r="4" fill="#FFFFFF"/>
+  <circle cx="34" cy="15" r="3.4" fill="#FFFFFF"/>
+  <circle cx="34" cy="33" r="3.4" fill="#FFFFFF"/>
+</svg>
