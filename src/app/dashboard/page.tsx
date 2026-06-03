@@ -11,7 +11,7 @@ export default function DashboardPage() {
       <div className="wallet-main">
         <div className="page-head">
           <h1 className="page-title">Wallet connected</h1>
-          <p className="page-sub">Review your connection, then start the demo.</p>
+          <p className="page-sub">Review your connection, then get started.</p>
         </div>
 
         <WalletStatusCard onStart={() => router.push("/budget")} />

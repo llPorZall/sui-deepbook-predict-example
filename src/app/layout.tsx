@@ -21,7 +21,7 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "PredictFlow",
   description:
-    "Sui Payment + DeepBook Predict + bounded AI agent — a Sui Overflow 2026 demo.",
+    "A bounded-AI prediction market on Sui Testnet — powered by Sui Payment, DeepBook Predict, and an AI research agent.",
 };
 
 export default function RootLayout({

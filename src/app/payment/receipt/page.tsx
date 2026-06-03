@@ -80,7 +80,7 @@ export default function PaymentReceiptPage() {
         </div>
 
         <div className="mode-wrap">
-          <p className="mode-cap">Demo mode</p>
+          <p className="mode-cap">Sui Testnet</p>
           <div className="mode-toggle" role="tablist" aria-label="Receipt mode">
             <button
               type="button"

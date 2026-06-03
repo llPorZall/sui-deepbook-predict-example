@@ -120,7 +120,7 @@ export default function BudgetPage() {
           <h1 className="page-title">Research budget cap</h1>
           <p className="page-sub">
             Authorize a spending cap. No funds move now — each prediction
-            deducts {FEE_PER_PREDICTION} demo {asset} from the cap when you
+            deducts {FEE_PER_PREDICTION} testnet {asset} from the cap when you
             sign on-chain.
           </p>
         </div>
@@ -151,7 +151,7 @@ export default function BudgetPage() {
                       setAmount(digitsOnly);
                     }}
                   />
-                  <span className="unit">demo {asset}</span>
+                  <span className="unit">testnet {asset}</span>
                 </div>
                 <div className="step-btns">
                   <button
@@ -186,7 +186,7 @@ export default function BudgetPage() {
               </div>
               <p className="field-hint">
                 = <strong>{predictionsAvailable} predictions available</strong>{" "}
-                · fee per prediction {FEE_PER_PREDICTION} demo {asset}{" "}
+                · fee per prediction {FEE_PER_PREDICTION} testnet {asset}{" "}
                 (read-only).
               </p>
             </div>
@@ -197,7 +197,7 @@ export default function BudgetPage() {
                 <Coins aria-hidden />
                 Asset
               </p>
-              <p className="field-help">Which demo asset funds the budget.</p>
+              <p className="field-help">Which testnet asset funds the budget.</p>
               <div className="segmented" role="radiogroup" aria-label="Asset">
                 <button
                   type="button"
@@ -207,7 +207,7 @@ export default function BudgetPage() {
                   onClick={() => setAsset("USDC")}
                 >
                   <CircleDollarSign aria-hidden />
-                  Demo USDC
+                  Testnet USDC
                 </button>
                 <button
                   type="button"
@@ -335,7 +335,7 @@ export default function BudgetPage() {
                   Authorization cap
                 </span>
                 <span className="sum-value sum-value--big">
-                  {amount} demo {asset}
+                  {amount} testnet {asset}
                 </span>
               </div>
               <div className="sum-row">
@@ -344,7 +344,7 @@ export default function BudgetPage() {
                   Fee per prediction
                 </span>
                 <span className="sum-value">
-                  {FEE_PER_PREDICTION} demo {asset} · {predictionsAvailable}{" "}
+                  {FEE_PER_PREDICTION} testnet {asset} · {predictionsAvailable}{" "}
                   available
                 </span>
               </div>
@@ -360,7 +360,7 @@ export default function BudgetPage() {
                   <Wallet aria-hidden />
                   Recipient
                 </span>
-                <span className="sum-value">Demo merchant</span>
+                <span className="sum-value">Testnet merchant</span>
               </div>
               <div className="sum-row">
                 <span className="sum-label">
@@ -398,7 +398,7 @@ export default function BudgetPage() {
                 loadingToast={{ title: "Saving budget…" }}
                 successToast={{
                   title: "Budget saved",
-                  description: `${amount} demo ${asset} · ${purpose}`,
+                  description: `${amount} testnet ${asset} · ${purpose}`,
                 }}
                 errorToast={{ title: "Couldn't save budget" }}
               >

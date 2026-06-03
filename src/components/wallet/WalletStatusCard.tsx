@@ -134,11 +134,11 @@ export function WalletStatusCard({ onStart }: { onStart?: () => void }) {
             className="btn--lg start-btn"
             trailing={<ArrowRight aria-hidden />}
             onAction={() => onStart?.()}
-            loadingToast={{ title: "Starting demo…" }}
+            loadingToast={{ title: "Launching…" }}
             successToast={{ title: "Budget step opened" }}
-            errorToast={{ title: "Couldn't start demo" }}
+            errorToast={{ title: "Couldn't launch" }}
           >
-            Start demo
+            Launch app
           </ActionButton>
         ) : (
           <p className="bal-note">Use the Connect button above to begin.</p>

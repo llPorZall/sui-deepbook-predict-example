@@ -79,14 +79,14 @@ export default function PaymentPage() {
       paymentIntent.amount === agentPolicy.spendingCap &&
       paymentIntent.recipient === agentPolicy.allowedRecipient &&
       paymentIntent.purpose === agentPolicy.purpose &&
-      paymentIntent.asset === `demo ${agentPolicy.asset}`
+      paymentIntent.asset === `testnet ${agentPolicy.asset}`
     )
       return;
     const intent = createPaymentIntent({
       walletAddress: wallet.address,
       recipient: agentPolicy.allowedRecipient,
       amount: agentPolicy.spendingCap,
-      asset: `demo ${agentPolicy.asset}`,
+      asset: `testnet ${agentPolicy.asset}`,
       purpose: agentPolicy.purpose,
       expiryHours: 24,
       gasStrategy: "sponsored",
@@ -200,7 +200,7 @@ export default function PaymentPage() {
 
   // Display values, falling back to placeholders when nothing is wired up yet.
   const amount = paymentIntent?.amount ?? agentPolicy?.spendingCap ?? "5";
-  const asset = paymentIntent?.asset ?? `demo ${agentPolicy?.asset ?? "USDC"}`;
+  const asset = paymentIntent?.asset ?? `testnet ${agentPolicy?.asset ?? "USDC"}`;
   const purpose = paymentIntent?.purpose ?? agentPolicy?.purpose ?? "Market research";
   const recipient = paymentIntent?.recipient ?? agentPolicy?.allowedRecipient ?? "";
   const recipientShort = recipient ? shortAddress(recipient) : "0x9c12…ab07";
@@ -235,7 +235,7 @@ export default function PaymentPage() {
               </div>
               <span className="badge badge--info">
                 <Info aria-hidden />
-                Demo
+                Testnet
               </span>
             </header>
 
@@ -298,7 +298,7 @@ export default function PaymentPage() {
                   <Wallet aria-hidden />
                   Recipient
                 </span>
-                <span className="ic-value">Demo merchant · {recipientShort}</span>
+                <span className="ic-value">Testnet merchant · {recipientShort}</span>
               </div>
               <div className="ic-row">
                 <span className="ic-label">

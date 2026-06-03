@@ -761,7 +761,7 @@ function SimulatorBody({ market }: { market: SelectedMarketView }) {
                       setBinQuote(e.target.value.replace(/[^0-9]/g, ""))
                     }
                   />
-                  <span className="post">{isTestnet ? market.quoteAsset : `demo ${market.quoteAsset}`}</span>
+                  <span className="post">{isTestnet ? market.quoteAsset : `testnet ${market.quoteAsset}`}</span>
                 </div>
               </div>
 
@@ -1103,7 +1103,7 @@ function SimulatorBody({ market }: { market: SelectedMarketView }) {
                         setRngQuote(e.target.value.replace(/[^0-9]/g, ""))
                       }
                     />
-                    <span className="post">{isTestnet ? market.quoteAsset : `demo ${market.quoteAsset}`}</span>
+                    <span className="post">{isTestnet ? market.quoteAsset : `testnet ${market.quoteAsset}`}</span>
                   </div>
                 </div>
 

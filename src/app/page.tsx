@@ -19,8 +19,8 @@ export default function HomePage() {
         </div>
         <h1 className="hero-title">PredictFlow</h1>
         <p className="hero-sub">
-          A simple demo showing how Sui Payment, DeepBook Predict, and bounded AI
-          agents can work together.
+          A bounded-AI prediction market on Sui Testnet — powered by Sui Payment,
+          DeepBook Predict, and an AI research agent.
         </p>
 
         <div className="cta-area">
@@ -35,7 +35,7 @@ export default function HomePage() {
               successToast={{ title: "Welcome to PredictFlow" }}
               errorToast={{ title: "Couldn't open dashboard" }}
             >
-              Start demo
+              Launch app
             </ActionButton>
           )}
           <span className="wallet-hint">
@@ -82,7 +82,7 @@ export default function HomePage() {
 
       <div className="disclaimer">
         <TriangleAlert aria-hidden />
-        Demo only. Uses testnet or simulated data. Not financial advice.
+        Runs on Sui Testnet with simulated data. Not financial advice.
       </div>
     </AppShell>
   );

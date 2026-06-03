@@ -321,7 +321,7 @@ export default function ReviewPage() {
             <Check />
           </div>
           <h1>Final review</h1>
-          <p>Every step of the demo flow is complete.</p>
+          <p>Every step of the flow is complete.</p>
         </header>
 
         {/* ---------- Checklist (real data) ---------- */}
@@ -531,7 +531,7 @@ export default function ReviewPage() {
               <>
                 <CreditCard aria-hidden />
                 <span>
-                  This prediction uses {budget.feePerPrediction} demo USDC of
+                  This prediction uses {budget.feePerPrediction} testnet USDC of
                   your budget (${budget.remaining} →{" "}
                   ${(
                     Math.max(
@@ -634,7 +634,7 @@ export default function ReviewPage() {
                 successToast={false}
                 errorToast={false}
               >
-                Preview Demo Transaction
+                Preview transaction
               </ActionButton>
               <p className="primary-helper">
                 <ShieldCheck aria-hidden />
@@ -646,11 +646,11 @@ export default function ReviewPage() {
           <div className="cta-secondary-row">
             <button type="button" className="btn btn--secondary">
               <Download aria-hidden />
-              Export Demo Receipt
+              Export receipt
             </button>
             <a className="btn btn--ghost btn--ghost-bordered" href="/">
               <RefreshCcw aria-hidden />
-              Restart Demo
+              Restart flow
             </a>
           </div>
         </div>

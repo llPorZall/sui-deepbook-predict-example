@@ -56,7 +56,7 @@ export function AppShell({
 
           <div className="nav-right">
             <span className="demo-badge">
-              <Info aria-hidden /> Demo Mode
+              <Info aria-hidden /> Sui Testnet
             </span>
             <BudgetMeterPill />
             <NetworkBadge />
@@ -68,7 +68,7 @@ export function AppShell({
       </nav>
 
       <div className="stepper-wrap">
-        <div className="stepper" role="list" aria-label="Demo progress">
+        <div className="stepper" role="list" aria-label="Flow progress">
           {STEPS.map((step, i) => {
             const state = i < currentStep ? "is-done" : i === currentStep ? "is-active" : "";
             const StepIcon = step.Icon;
@@ -92,7 +92,7 @@ export function AppShell({
       <footer>
         <div className="footer-inner">
           <ShieldCheck aria-hidden />
-          Demo only · {network} · Not financial advice
+          Sui {network} · Not financial advice
         </div>
       </footer>
     </>

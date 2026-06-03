@@ -25,9 +25,9 @@ export function Header() {
         </a>
 
         <div className="nav-right">
-          <span className="demo-badge" title="Demo mode — no live funds">
+          <span className="demo-badge" title="Sui Testnet — no live funds">
             <Sparkles aria-hidden="true" />
-            Demo Mode
+            Sui Testnet
           </span>
           <span className="wallet-chip" aria-label="Wallet disconnected">
             <span className="wallet-dot is-off" aria-hidden="true" />
