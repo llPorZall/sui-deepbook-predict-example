@@ -168,7 +168,13 @@ Then open [http://localhost:3000](http://localhost:3000).
 
 ### Environment
 
-Copy `.env` to `.env.local` and adjust as needed. The interesting flags:
+Copy [`.env.example`](./.env.example) to `.env.local` and adjust as needed:
+
+```bash
+cp .env.example .env.local
+```
+
+The interesting flags:
 
 | Variable | Purpose |
 | --- | --- |
