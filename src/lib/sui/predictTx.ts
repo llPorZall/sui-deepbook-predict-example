@@ -165,6 +165,144 @@ export function mintRangeTx(
   return tx;
 }
 
+// ---------- Redeem & withdraw ----------
+
+export type RedeemBinaryParams = {
+  kind: "binary";
+  managerId: string;
+  oracleId: string;
+  expiry: bigint;
+  strike: bigint;
+  direction: BinaryDirection;
+  /** Open quantity to redeem, in smallest position unit. */
+  quantity: bigint;
+  /**
+   * Set when the position is already settled and the manager owner path is
+   * not authorized — the call routes through `redeem_permissionless`.
+   * Range positions have no permissionless variant on chain.
+   */
+  permissionless?: boolean;
+};
+
+export type RedeemRangeParams = {
+  kind: "range";
+  managerId: string;
+  oracleId: string;
+  expiry: bigint;
+  lowerStrike: bigint;
+  higherStrike: bigint;
+  quantity: bigint;
+};
+
+export type RedeemPositionParams = RedeemBinaryParams | RedeemRangeParams;
+
+/**
+ * Redeems an open or settled position. Payout is credited to the
+ * `PredictManager` (not the wallet) — use `withdrawTx` afterwards to pull
+ * DUSDC out. Settled binary positions can use `redeem_permissionless` so the
+ * owner key isn't required.
+ *
+ * Bigint inputs are raw on-chain u64 values:
+ *  - `expiry` in ms
+ *  - `strike`, `lowerStrike`, `higherStrike` scaled by 1e9 (oracle decimals)
+ *  - `quantity` in smallest position unit (server `open_quantity`)
+ */
+export function redeemPositionTx(
+  params: RedeemPositionParams,
+  config: PredictConfig = getPredictConfig(),
+): Transaction {
+  const tx = new Transaction();
+  const expiry = requirePositive("expiry", params.expiry);
+  const quantity = requirePositive("quantity", params.quantity);
+
+  if (params.kind === "binary") {
+    const strike = requirePositive("strike", params.strike);
+    const marketKey = tx.moveCall({
+      target: `${config.packageId}::market_key::new`,
+      arguments: [
+        tx.pure.id(params.oracleId),
+        tx.pure.u64(expiry),
+        tx.pure.u64(strike),
+        tx.pure.bool(params.direction === "up"),
+      ],
+    });
+    const target = params.permissionless
+      ? `${config.packageId}::predict::redeem_permissionless`
+      : `${config.packageId}::predict::redeem`;
+    tx.moveCall({
+      target,
+      typeArguments: [config.dusdcType],
+      arguments: [
+        tx.object(config.predictObjectId),
+        tx.object(params.managerId),
+        tx.object(params.oracleId),
+        marketKey,
+        tx.pure.u64(quantity),
+        tx.object(SUI_CLOCK_OBJECT_ID),
+      ],
+    });
+    return tx;
+  }
+
+  const lowerStrike = requirePositive("lowerStrike", params.lowerStrike);
+  const higherStrike = requirePositive("higherStrike", params.higherStrike);
+  if (lowerStrike >= higherStrike) {
+    throw new Error(
+      `predictTx: lowerStrike (${lowerStrike}) must be < higherStrike (${higherStrike})`,
+    );
+  }
+  const rangeKey = tx.moveCall({
+    target: `${config.packageId}::range_key::new`,
+    arguments: [
+      tx.pure.id(params.oracleId),
+      tx.pure.u64(expiry),
+      tx.pure.u64(lowerStrike),
+      tx.pure.u64(higherStrike),
+    ],
+  });
+  tx.moveCall({
+    target: `${config.packageId}::predict::redeem_range`,
+    typeArguments: [config.dusdcType],
+    arguments: [
+      tx.object(config.predictObjectId),
+      tx.object(params.managerId),
+      tx.object(params.oracleId),
+      rangeKey,
+      tx.pure.u64(quantity),
+      tx.object(SUI_CLOCK_OBJECT_ID),
+    ],
+  });
+  return tx;
+}
+
+export type WithdrawTxParams = {
+  managerId: string;
+  /** Recipient of the withdrawn DUSDC — typically the connected wallet. */
+  recipient: string;
+  /** Withdrawal amount in DUSDC base units (1 DUSDC = 10^6 units). */
+  amountBaseUnits: bigint;
+};
+
+/**
+ * Withdraws DUSDC from a `PredictManager` and transfers the resulting coin to
+ * `recipient`. `predict_manager::withdraw<Quote>` returns the coin; the PTB
+ * transfers it in the same transaction so funds always land in the wallet.
+ */
+export function withdrawTx(
+  params: WithdrawTxParams,
+  config: PredictConfig = getPredictConfig(),
+): Transaction {
+  const amount = requirePositive("amountBaseUnits", params.amountBaseUnits);
+  const tx = new Transaction();
+  const coin = tx.moveCall({
+    target: `${config.packageId}::predict_manager::withdraw`,
+    typeArguments: [config.dusdcType],
+    arguments: [tx.object(params.managerId), tx.pure.u64(amount)],
+  });
+  tx.transferObjects([coin], tx.pure.address(params.recipient));
+  return tx;
+}
+
 // ---------- Phase 4.9: bundled per-prediction PTB ----------
 
 export type PlacePredictionFee = {

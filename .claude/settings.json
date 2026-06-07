@@ -68,7 +68,25 @@
       "Bash(echo \"exit=$?\")",
       "Bash(git remote *)",
       "Bash(git add *)",
-      "Bash(git commit -m ' *)"
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(grep -n \"demo \\\\${market.quoteAsset}\" src/app/simulate/page.tsx)",
+      "Bash(curl -s \"https://predict-server.testnet.mystenlabs.com/managers\")",
+      "Bash(curl -s \"https://predict-server.testnet.mystenlabs.com/managers/0xff6f7b507433a86005a108e4e9f0a73f3162fc16b59123217f6a13fa2fd3b6d6/summary\")",
+      "Bash(curl -s \"https://predict-server.testnet.mystenlabs.com/managers/0xff6f7b507433a86005a108e4e9f0a73f3162fc16b59123217f6a13fa2fd3b6d6/positions/summary\")",
+      "Bash(curl -s \"https://predict-server.testnet.mystenlabs.com/managers/0xff6f7b507433a86005a108e4e9f0a73f3162fc16b59123217f6a13fa2fd3b6d6/pnl\")",
+      "Bash(git -C /Users/pongchaitangbowonweerakun/Documents/playground/predictflow branch -a)",
+      "Bash(curl -sI \"https://raw.githubusercontent.com/MystenLabs/deepbook-predict/predict-testnet-4-16/sources/predict.move\")",
+      "Bash(curl -sI \"https://raw.githubusercontent.com/MystenLabs/deepbook/predict-testnet-4-16/packages/deepbook/sources/predict/predict.move\")",
+      "Bash(curl -s \"https://api.github.com/search/repositories?q=deepbook+predict+org:MystenLabs\")",
+      "Bash(curl -s \"https://api.github.com/search/code?q=predict_manager+module+language:Move+org:MystenLabs\")",
+      "Bash(curl -s \"https://predict-server.testnet.mystenlabs.com/\")",
+      "Bash(curl -sI \"https://github.com/MystenLabs/deepbook/tree/predict-testnet-4-16\")",
+      "Read(//Users/pongchaitangbowonweerakun/Documents/playground/**)",
+      "Read(//Users/pongchaitangbowonweerakun/Documents/**)",
+      "Read(//Users/pongchaitangbowonweerakun/**)",
+      "Bash(curl -s -X POST https://fullnode.testnet.sui.io:443 -H 'Content-Type: application/json' -d '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"sui_getNormalizedMoveModule\",\"params\":[\"0xf5ea2b3749c65d6e56507cc35388719aadb28f9cab873696a2f8687f5c785138\",\"predict\"]}')",
+      "Bash(curl -s -X POST https://fullnode.testnet.sui.io:443 -H 'Content-Type: application/json' -d '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"sui_getNormalizedMoveModule\",\"params\":[\"0xf5ea2b3749c65d6e56507cc35388719aadb28f9cab873696a2f8687f5c785138\",\"predict_manager\"]}')"
     ],
     "additionalDirectories": [
       "/tmp"

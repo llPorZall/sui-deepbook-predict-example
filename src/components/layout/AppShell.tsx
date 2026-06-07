@@ -1,9 +1,8 @@
 "use client";
 
-import { TrendingUp, ShieldCheck, Wallet, SlidersHorizontal, CreditCard, LineChart, FlaskConical, ClipboardCheck, Check, Info } from "lucide-react";
+import { TrendingUp, ShieldCheck, Wallet, SlidersHorizontal, CreditCard, LineChart, FlaskConical, ClipboardCheck, Check, Briefcase } from "lucide-react";
 import type { ReactNode } from "react";
 import { ConnectWalletButton } from "@/components/wallet/ConnectWalletButton";
-import { NetworkBadge } from "@/components/wallet/NetworkBadge";
 import { BudgetMeterPill } from "@/components/agent/BudgetMeterPill";
 import { BudgetReopenGate } from "@/components/agent/BudgetReopenGate";
 
@@ -55,11 +54,11 @@ export function AppShell({
           </div>
 
           <div className="nav-right">
-            <span className="demo-badge">
-              <Info aria-hidden /> Sui Testnet
-            </span>
+            <a className="nav-link" href="/portfolio">
+              <Briefcase aria-hidden />
+              Portfolio
+            </a>
             <BudgetMeterPill />
-            <NetworkBadge />
             <ConnectWalletButton />
             {/* `network` retained for the footer text below */}
             {false && network}

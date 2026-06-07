@@ -42,3 +42,38 @@ export type VaultSummary = {
   plpSharePrice?: string;
   dataSource: DataSource;
 };
+
+export type PositionStatus =
+  | "Active"
+  | "PendingSettlement"
+  | "Settled"
+  | "Redeemed";
+
+export type PositionDirection = "Above" | "Below";
+
+export type PortfolioPosition = {
+  marketId: string;
+  oracleId: string;
+  asset: string;
+  marketType: MarketType;
+  /** Set for binary markets. */
+  direction?: PositionDirection;
+  /** Binary strike in decimal price units (raw server value ÷ 10^9). */
+  strike?: number;
+  /** Range markets — currently unused (server has no range positions endpoint). */
+  lowerStrike?: number;
+  higherStrike?: number;
+  expiry: string;
+  /** Open quantity, smallest position unit (raw server value, unscaled). */
+  quantity: number;
+  /** Open cost basis in DUSDC (raw ÷ 10^6). */
+  cost: number;
+  /** Mark-to-market value in DUSDC (raw ÷ 10^6). */
+  currentValue: number;
+  /** Unrealized PnL in DUSDC for the open exposure. */
+  pnl: number;
+  status: PositionStatus;
+  /** Oracle settlement price in decimal units, once settled. */
+  settlementPrice?: number;
+  dataSource: DataSource;
+};

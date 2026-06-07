@@ -9,12 +9,19 @@ import {
   Droplet,
   Globe,
   IdCard,
+  LogOut,
 } from "lucide-react";
-import { useCurrentAccount, useCurrentWallet } from "@mysten/dapp-kit";
+import { useRouter } from "next/navigation";
+import {
+  useCurrentAccount,
+  useCurrentWallet,
+  useDisconnectWallet,
+} from "@mysten/dapp-kit";
 import { NetworkBadge } from "./NetworkBadge";
-import { useDemoStore } from "@/lib/store/demoStore";
+import { useDemoStore, DEMO_STEPS } from "@/lib/store/demoStore";
 import { useWalletBalances } from "@/lib/sui/useWalletBalances";
 import { ActionButton } from "@/components/ui/ActionButton";
+import { toast } from "@/lib/toast/toastStore";
 
 function shortAddress(address: string): string {
   if (address.length <= 16) return address;
@@ -22,13 +29,27 @@ function shortAddress(address: string): string {
 }
 
 export function WalletStatusCard({ onStart }: { onStart?: () => void }) {
+  const router = useRouter();
   const account = useCurrentAccount();
   const { currentWallet } = useCurrentWallet();
   const wallet = useDemoStore((s) => s.wallet);
+  const setWallet = useDemoStore((s) => s.setWallet);
+  const resetDemo = useDemoStore((s) => s.resetDemo);
+  const setCurrentStep = useDemoStore((s) => s.setCurrentStep);
+  const { mutate: disconnectWallet } = useDisconnectWallet();
   const { sui, stable, isLoading: balancesLoading } = useWalletBalances();
 
   const connected = wallet.connected && !!account;
   const address = account?.address ?? "";
+
+  const handleDisconnect = () => {
+    disconnectWallet();
+    setWallet({ connected: false });
+    resetDemo();
+    setCurrentStep(DEMO_STEPS.connect);
+    router.push("/");
+    toast.info("Wallet disconnected");
+  };
 
   return (
     <section className="wallet-card">
@@ -129,17 +150,27 @@ export function WalletStatusCard({ onStart }: { onStart?: () => void }) {
 
       <div className="wc-foot">
         {connected ? (
-          <ActionButton
-            variant="primary"
-            className="btn--lg start-btn"
-            trailing={<ArrowRight aria-hidden />}
-            onAction={() => onStart?.()}
-            loadingToast={{ title: "Launching…" }}
-            successToast={{ title: "Budget step opened" }}
-            errorToast={{ title: "Couldn't launch" }}
-          >
-            Launch app
-          </ActionButton>
+          <>
+            <ActionButton
+              variant="primary"
+              className="btn--lg start-btn"
+              trailing={<ArrowRight aria-hidden />}
+              onAction={() => onStart?.()}
+              loadingToast={{ title: "Launching…" }}
+              successToast={{ title: "Budget step opened" }}
+              errorToast={{ title: "Couldn't launch" }}
+            >
+              Launch app
+            </ActionButton>
+            <button
+              type="button"
+              className="btn btn--secondary wc-disconnect"
+              onClick={handleDisconnect}
+            >
+              <LogOut aria-hidden />
+              Disconnect
+            </button>
+          </>
         ) : (
           <p className="bal-note">Use the Connect button above to begin.</p>
         )}

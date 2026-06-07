@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { CircleX, Loader2, LogOut, Wallet } from "lucide-react";
+import { CircleX, Loader2, Wallet } from "lucide-react";
 import {
   ConnectModal,
   useCurrentAccount,
   useCurrentWallet,
-  useDisconnectWallet,
 } from "@mysten/dapp-kit";
 import { useDemoStore } from "@/lib/store/demoStore";
+import { WalletChipMenu } from "./WalletChipMenu";
 
 export type ConnectError =
   | "not_installed"
@@ -30,14 +30,11 @@ function shortAddress(address: string): string {
  */
 export function ConnectWalletButton({
   className,
-  showDisconnect = false,
 }: {
   className?: string;
-  showDisconnect?: boolean;
 }) {
   const account = useCurrentAccount();
-  const { currentWallet, connectionStatus } = useCurrentWallet();
-  const { mutate: disconnect } = useDisconnectWallet();
+  const { connectionStatus } = useCurrentWallet();
   const wallet = useDemoStore((s) => s.wallet);
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -92,27 +89,9 @@ export function ConnectWalletButton({
     return Wallet;
   }, [error, connectionStatus]);
 
-  // Connected + healthy: render the address chip (no modal).
+  // Connected + healthy: render the chip-as-dropdown trigger.
   if (wallet.connected && !error && account) {
-    return (
-      <span className={`wallet-chip${className ? ` ${className}` : ""}`}>
-        <span className="wallet-dot" aria-hidden />
-        <span className="wallet-addr">{shortAddress(account.address)}</span>
-        {currentWallet?.name && (
-          <span className="wallet-net">{currentWallet.name}</span>
-        )}
-        {showDisconnect && (
-          <button
-            type="button"
-            className="copy-btn"
-            aria-label="Disconnect wallet"
-            onClick={() => disconnect()}
-          >
-            <LogOut aria-hidden />
-          </button>
-        )}
-      </span>
-    );
+    return <WalletChipMenu className={className} />;
   }
 
   return (

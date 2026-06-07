@@ -19,7 +19,7 @@ export type DisplayMarket = {
   status: DisplayOracle;
   /** Short countdown ("00:14:39") or status word for non-active states. */
   countdown: string;
-  /** Absolute expiry like "10:15 UTC · Mar 5". Empty when not applicable. */
+  /** Absolute expiry in the viewer's local timezone, formatted as "22 JUN 2026". Empty when not applicable. */
   expiryAbsolute: string;
   /** Legacy combined string still used in a few places. */
   expiryDisplay: string;
@@ -120,11 +120,10 @@ export function expiryAbsolute(expiry: string): string {
   const t = Date.parse(expiry);
   if (!Number.isFinite(t)) return "";
   const d = new Date(t);
-  const hh = pad(d.getUTCHours());
-  const mm = pad(d.getUTCMinutes());
-  const day = d.getUTCDate();
-  const month = MONTHS[d.getUTCMonth()];
-  return `${hh}:${mm} UTC · ${month} ${day}`;
+  const day = pad(d.getDate());
+  const month = MONTHS[d.getMonth()].toUpperCase();
+  const year = d.getFullYear();
+  return `${day} ${month} ${year}`;
 }
 
 export function expiryDisplay(

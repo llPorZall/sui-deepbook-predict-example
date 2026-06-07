@@ -46,8 +46,59 @@ export type VaultSummaryDto = {
 export type ManagerSummaryDto = {
   managerId: string;
   owner: string;
-  digest: string;
-  checkpoint: number;
+  balances: { quoteAsset: string; balance: number }[];
+  tradingBalance: number;
+  openExposure: number;
+  redeemableValue: number;
+  realizedPnl: number;
+  unrealizedPnl: number;
+  accountValue: number;
+  openPositions: number;
+  awaitingSettlementPositions: number;
+};
+
+export type ManagerPositionDto = {
+  predictId: string;
+  managerId: string;
+  quoteAsset: string;
+  oracleId: string;
+  underlyingAsset: string;
+  expiryMs: number;
+  /** Raw scaled strike (oracle price decimals = 9). */
+  strike: number;
+  isUp: boolean;
+  mintedQuantity: number;
+  redeemedQuantity: number;
+  openQuantity: number;
+  totalCost: number;
+  totalPayout: number;
+  realizedPnl: number;
+  unrealizedPnl: number;
+  openCostBasis: number;
+  averageEntryPrice: number;
+  averageExitPrice: number;
+  /** Mark price in raw scaled units. */
+  markPrice: number;
+  /** Mark value in DUSDC base units. */
+  markValue: number;
+  status: string;
+  firstMintedAt: number;
+  lastActivityAt: number;
+};
+
+export type ManagerPnlPoint = {
+  timestampMs: number;
+  realizedPnl: number;
+  cumulativeRealizedPnl: number;
+};
+
+export type ManagerPnlDto = {
+  managerId: string;
+  range: string;
+  seriesType: string;
+  points: ManagerPnlPoint[];
+  currentUnrealizedPnl: number;
+  currentTotalPnl: number;
 };
 
 export type OracleStateDto = {
@@ -84,6 +135,8 @@ export interface PredictServerClient {
   getQuoteAssets(predictId: string): Promise<string[]>;
   getVaultSummary(predictId: string): Promise<VaultSummaryDto>;
   getManagerSummary(managerId: string): Promise<ManagerSummaryDto | null>;
+  getManagerPositions(managerId: string): Promise<ManagerPositionDto[]>;
+  getManagerPnl(managerId: string): Promise<ManagerPnlDto | null>;
   getOracleState(oracleId: string): Promise<OracleStateDto>;
 }
 
@@ -222,21 +275,105 @@ function parseOracleState(data: unknown, endpoint: string): OracleStateDto {
   };
 }
 
-function parseManagerEvent(
+function parseManagerSummary(
   data: unknown,
   endpoint: string,
 ): ManagerSummaryDto {
   if (!isObject(data)) {
     throw new PredictServerError(
-      `Response from ${endpoint} is not a manager object`,
+      `Response from ${endpoint} is not a manager summary object`,
+      { endpoint },
+    );
+  }
+  const balancesRaw = Array.isArray(data["balances"]) ? data["balances"] : [];
+  const balances = balancesRaw.flatMap((b) => {
+    if (!isObject(b)) return [];
+    const quoteAsset = asString(b["quote_asset"]);
+    const balance = asNumber(b["balance"]);
+    if (!quoteAsset || balance === undefined) return [];
+    return [{ quoteAsset, balance }];
+  });
+  return {
+    managerId: requireString(data, "manager_id", endpoint),
+    owner: requireString(data, "owner", endpoint),
+    balances,
+    tradingBalance: asNumber(data["trading_balance"]) ?? 0,
+    openExposure: asNumber(data["open_exposure"]) ?? 0,
+    redeemableValue: asNumber(data["redeemable_value"]) ?? 0,
+    realizedPnl: asNumber(data["realized_pnl"]) ?? 0,
+    unrealizedPnl: asNumber(data["unrealized_pnl"]) ?? 0,
+    accountValue: asNumber(data["account_value"]) ?? 0,
+    openPositions: asNumber(data["open_positions"]) ?? 0,
+    awaitingSettlementPositions:
+      asNumber(data["awaiting_settlement_positions"]) ?? 0,
+  };
+}
+
+function parseManagerPosition(
+  data: unknown,
+  endpoint: string,
+): ManagerPositionDto {
+  if (!isObject(data)) {
+    throw new PredictServerError(
+      `Response from ${endpoint} is not a position object`,
       { endpoint },
     );
   }
   return {
+    predictId: requireString(data, "predict_id", endpoint),
     managerId: requireString(data, "manager_id", endpoint),
-    owner: requireString(data, "owner", endpoint),
-    digest: asString(data["digest"]) ?? "",
-    checkpoint: asNumber(data["checkpoint"]) ?? 0,
+    quoteAsset: requireString(data, "quote_asset", endpoint),
+    oracleId: requireString(data, "oracle_id", endpoint),
+    underlyingAsset: requireString(data, "underlying_asset", endpoint),
+    expiryMs: requireNumber(data, "expiry", endpoint),
+    strike: requireNumber(data, "strike", endpoint),
+    isUp: data["is_up"] === true,
+    mintedQuantity: asNumber(data["minted_quantity"]) ?? 0,
+    redeemedQuantity: asNumber(data["redeemed_quantity"]) ?? 0,
+    openQuantity: asNumber(data["open_quantity"]) ?? 0,
+    totalCost: asNumber(data["total_cost"]) ?? 0,
+    totalPayout: asNumber(data["total_payout"]) ?? 0,
+    realizedPnl: asNumber(data["realized_pnl"]) ?? 0,
+    unrealizedPnl: asNumber(data["unrealized_pnl"]) ?? 0,
+    openCostBasis: asNumber(data["open_cost_basis"]) ?? 0,
+    averageEntryPrice: asNumber(data["average_entry_price"]) ?? 0,
+    averageExitPrice: asNumber(data["average_exit_price"]) ?? 0,
+    markPrice: asNumber(data["mark_price"]) ?? 0,
+    markValue: asNumber(data["mark_value"]) ?? 0,
+    status: requireString(data, "status", endpoint),
+    firstMintedAt: asNumber(data["first_minted_at"]) ?? 0,
+    lastActivityAt: asNumber(data["last_activity_at"]) ?? 0,
+  };
+}
+
+function parseManagerPnl(data: unknown, endpoint: string): ManagerPnlDto {
+  if (!isObject(data)) {
+    throw new PredictServerError(
+      `Response from ${endpoint} is not a manager pnl object`,
+      { endpoint },
+    );
+  }
+  const pointsRaw = Array.isArray(data["points"]) ? data["points"] : [];
+  const points = pointsRaw.flatMap((p) => {
+    if (!isObject(p)) return [];
+    const timestampMs = asNumber(p["timestamp_ms"]);
+    if (timestampMs === undefined) return [];
+    return [
+      {
+        timestampMs,
+        realizedPnl: asNumber(p["realized_pnl"]) ?? 0,
+        cumulativeRealizedPnl:
+          asNumber(p["cumulative_realized_pnl"]) ?? 0,
+      },
+    ];
+  });
+  return {
+    managerId: requireString(data, "manager_id", endpoint),
+    range: asString(data["range"]) ?? "",
+    seriesType: asString(data["series_type"]) ?? "",
+    points,
+    currentUnrealizedPnl: asNumber(data["current_unrealized_pnl"]) ?? 0,
+    currentTotalPnl: asNumber(data["current_total_pnl"]) ?? 0,
   };
 }
 
@@ -276,14 +413,10 @@ export function createPredictServerClient(
   const baseUrl = resolveBaseUrl(options.baseUrl);
   const fetchImpl: Fetcher = options.fetchImpl ?? fetch;
 
-  async function request<T>(
-    path: string,
-    parse: (data: unknown, endpoint: string) => T,
-  ): Promise<T> {
+  async function rawRequest(path: string): Promise<Response> {
     const endpoint = `${baseUrl}${path}`;
-    let response: Response;
     try {
-      response = await fetchImpl(endpoint, {
+      return await fetchImpl(endpoint, {
         method: "GET",
         headers: { Accept: "application/json" },
       });
@@ -293,6 +426,14 @@ export function createPredictServerClient(
         { endpoint, cause: err },
       );
     }
+  }
+
+  async function request<T>(
+    path: string,
+    parse: (data: unknown, endpoint: string) => T,
+  ): Promise<T> {
+    const endpoint = `${baseUrl}${path}`;
+    const response = await rawRequest(path);
 
     if (!response.ok) {
       throw new PredictServerError(
@@ -311,6 +452,31 @@ export function createPredictServerClient(
       );
     }
 
+    return parse(json, endpoint);
+  }
+
+  async function requestNullable<T>(
+    path: string,
+    parse: (data: unknown, endpoint: string) => T,
+  ): Promise<T | null> {
+    const endpoint = `${baseUrl}${path}`;
+    const response = await rawRequest(path);
+    if (response.status === 404) return null;
+    if (!response.ok) {
+      throw new PredictServerError(
+        `Predict server returned ${response.status} for ${path}`,
+        { endpoint, status: response.status },
+      );
+    }
+    let json: unknown;
+    try {
+      json = await response.json();
+    } catch (err) {
+      throw new PredictServerError(
+        `Failed to parse JSON from Predict server (${path})`,
+        { endpoint, cause: err },
+      );
+    }
     return parse(json, endpoint);
   }
 
@@ -360,13 +526,23 @@ export function createPredictServerClient(
         parseOracleState,
       );
     },
-    async getManagerSummary(managerId) {
-      // No /managers/<id> endpoint — server exposes a list of creation events.
-      // Filter the global list by manager_id.
-      const list = await request(`/managers`, (data, endpoint) =>
-        parseArray(data, endpoint, parseManagerEvent),
+    getManagerSummary(managerId) {
+      return requestNullable(
+        `/managers/${encode(managerId)}/summary`,
+        parseManagerSummary,
       );
-      return list.find((m) => m.managerId === managerId) ?? null;
+    },
+    getManagerPositions(managerId) {
+      return request(
+        `/managers/${encode(managerId)}/positions/summary`,
+        (data, endpoint) => parseArray(data, endpoint, parseManagerPosition),
+      );
+    },
+    getManagerPnl(managerId) {
+      return requestNullable(
+        `/managers/${encode(managerId)}/pnl`,
+        parseManagerPnl,
+      );
     },
   };
 }
